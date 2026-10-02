@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weg zur Abschlussarbeit – Wirtschaftspädagogik Bamberg</title>
+  <style>
+    :root {
+      --uni-blue: #235179;
+      --uni-blue-hover: #3E85C6;
+      --uni-blue-light: #eef5fa;
+      --uni-blue-lighter: #f6f9fc;
+      --text: #222;
+      --muted: #5e666d;
+      --border: #d2dce4;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: transparent; color: var(--text); font-family: Arial, Helvetica, sans-serif; }
+    body { padding: 4px; }
+    .tool { width: 100%; max-width: 1100px; margin: 0 auto; }
+    .intro { margin: 0 0 18px; color: var(--muted); font-size: .98rem; line-height: 1.55; }
+    .type-switch { display: inline-flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; padding: 5px; border: 1px solid var(--border); border-radius: 6px; background: #f6f8fa; }
+    .type-button { min-height: 42px; padding: 9px 15px; border: 0; border-radius: 4px; background: transparent; color: var(--uni-blue); font: inherit; font-weight: 700; cursor: pointer; }
+    .type-button[aria-pressed="true"] { background: var(--uni-blue); color: #fff; }
+    .type-button:focus-visible, .step-button:focus-visible, .link-button:focus-visible, .special-button:focus-visible { outline: 3px solid #111; outline-offset: 3px; }
+    .timeline { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 8px; margin-bottom: 16px; }
+    .timeline::before { content: ""; position: absolute; left: 6%; right: 6%; top: 25px; height: 2px; background: var(--border); z-index: 0; }
+    .step-button { position: relative; z-index: 1; min-width: 0; padding: 0 4px 12px; border: 0; background: transparent; color: var(--text); font: inherit; cursor: pointer; text-align: center; }
+    .step-number { width: 50px; height: 50px; margin: 0 auto 9px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--uni-blue); border-radius: 50%; background: #fff; color: var(--uni-blue); font-weight: 700; }
+    .step-label { display: block; font-size: .9rem; line-height: 1.25; font-weight: 700; }
+    .step-button:hover .step-number, .step-button[aria-selected="true"] .step-number { background: var(--uni-blue); color: #fff; }
+    .step-button[aria-selected="true"] .step-label { color: var(--uni-blue); }
+    .detail { min-height: 275px; padding: 25px; border: 1px solid var(--border); border-top: 6px solid var(--uni-blue); border-radius: 5px; background: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.07); }
+    .detail-kicker { margin: 0 0 5px; color: var(--muted); font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+    .detail h2 { margin: 0 0 12px; color: var(--uni-blue); font-size: 1.4rem; line-height: 1.3; }
+    .detail-text { margin: 0; line-height: 1.6; }
+    .detail-list { margin: 13px 0 0; padding-left: 21px; line-height: 1.55; }
+    .detail-list li + li { margin-top: 7px; }
+    .notice { margin-top: 16px; padding: 12px 14px; border-left: 4px solid var(--uni-blue); background: var(--uni-blue-lighter); line-height: 1.5; font-size: .92rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .link-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 15px; border: 1px solid var(--uni-blue); border-radius: 4px; text-decoration: none; font-weight: 700; }
+    .link-primary { background: var(--uni-blue); color: #fff; }
+    .link-primary:hover { background: var(--uni-blue-hover); }
+    .link-secondary { background: #fff; color: var(--uni-blue); }
+    .link-secondary:hover { background: var(--uni-blue-light); }
+    .special-heading { margin: 26px 0 12px; color: var(--uni-blue); font-size: 1.12rem; }
+    .special-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+    .special-button { min-height: 95px; padding: 17px 18px; border: 1px solid var(--border); border-left: 5px solid var(--uni-blue); border-radius: 4px; background: #fff; text-align: left; font: inherit; cursor: pointer; }
+    .special-button:hover { background: var(--uni-blue-light); }
+    .special-title { display: block; color: var(--uni-blue); font-weight: 700; margin-bottom: 6px; }
+    .special-text { display: block; color: var(--muted); font-size: .9rem; line-height: 1.4; }
+    .special-panel { display: none; margin-top: 12px; padding: 18px; border: 1px solid var(--border); border-radius: 4px; background: var(--uni-blue-lighter); line-height: 1.55; }
+    .special-panel.is-visible { display: block; }
+    .special-panel h3 { margin: 0 0 8px; color: var(--uni-blue); font-size: 1.08rem; }
+    .seminar-note { margin-top: 24px; padding: 18px; border: 1px solid var(--border); border-radius: 4px; background: #fafafa; }
+    .seminar-note h3 { margin: 0 0 8px; color: var(--uni-blue); font-size: 1.08rem; }
+    .seminar-note p { margin: 0; line-height: 1.5; }
+    @media (max-width: 850px) { .timeline { grid-template-columns: repeat(3,minmax(0,1fr)); row-gap: 15px; } .timeline::before { display:none; } }
+    @media (max-width: 580px) { .timeline { grid-template-columns: repeat(2,minmax(0,1fr)); } .special-grid { grid-template-columns: 1fr; } .detail { min-height: 0; padding: 20px; } .actions { flex-direction: column; } .link-button { width: 100%; text-align: center; } .type-switch { display: grid; grid-template-columns: 1fr 1fr; width: 100%; } }
+  </style>
+  <script src="https://www.uni-bamberg.de/_frontend/static/iframeResizer.contentWindow.min.js"></script>
+</head>
+<body>
+<main class="tool">
+  <p class="intro">Von der Themenwahl bis zur Abgabe: Wählen Sie einen Schritt aus und erhalten Sie die wichtigsten Informationen und direkten Links für Ihre Abschlussarbeit in der Wirtschaftspädagogik.</p>
+
+  <div class="type-switch" role="group" aria-label="Art der Abschlussarbeit">
+    <button class="type-button" type="button" data-type="bachelor" aria-pressed="true">Bachelorarbeit</button>
+    <button class="type-button" type="button" data-type="master" aria-pressed="false">Masterarbeit</button>
+  </div>
+
+  <nav class="timeline" aria-label="Ablauf der Abschlussarbeit">
+    <button class="step-button" type="button" data-step="topic" aria-selected="true"><span class="step-number">1</span><span class="step-label">Thema finden</span></button>
+    <button class="step-button" type="button" data-step="apply" aria-selected="false"><span class="step-number">2</span><span class="step-label">Bewerben & Betreuung</span></button>
+    <button class="step-button" type="button" data-step="register" aria-selected="false"><span class="step-number">3</span><span class="step-label">Anmelden</span></button>
+    <button class="step-button" type="button" data-step="write" aria-selected="false"><span class="step-number">4</span><span class="step-label">Bearbeiten</span></button>
+    <button class="step-button" type="button" data-step="submit" aria-selected="false"><span class="step-number">5</span><span class="step-label">Abgeben</span></button>
+    <button class="step-button" type="button" data-step="after" aria-selected="false"><span class="step-number">6</span><span class="step-label">Danach</span></button>
+  </nav>
+
+  <section class="detail" id="detail" aria-live="polite" tabindex="-1">
+    <p class="detail-kicker" id="detailKicker"></p>
+    <h2 id="detailTitle"></h2>
+    <div id="detailBody"></div>
+    <div class="actions" id="detailActions"></div>
+  </section>
+
+  <h2 class="special-heading">Sonderfälle und wichtige Zusatzinfos</h2>
+  <div class="special-grid">
+    <button class="special-button" type="button" data-special="external"><span class="special-title">Masterarbeit außerhalb der Wirtschaftspädagogik?</span><span class="special-text">Wirtschaftspädagogischen Bezug vorab prüfen lassen.</span></button>
+    <button class="special-button" type="button" data-special="certificate"><span class="special-title">Bestehensbescheinigung benötigt?</span><span class="special-text">Relevant z. B. für Referendariat oder Berufseinstieg.</span></button>
+  </div>
+  <section class="special-panel" id="specialPanel" aria-live="polite"></section>
+
+  <aside class="seminar-note">
+    <h3>Seminar- oder Hausarbeit?</h3>
+    <p>Für wissenschaftliche Arbeiten gilt derzeit der APA-7-Standard. Für Abschlussarbeiten finden Sie die zusätzlichen organisatorischen Schritte oben im Navigator.</p>
+    <div class="actions"><a class="link-button link-secondary" href="https://apastyle.apa.org/style-grammar-guidelines/references/examples" target="_blank" rel="noopener">APA-7-Beispiele öffnen</a></div>
+  </aside>
+</main>
+
+<script>
+const links = {
+  topics: "https://miro.com/app/board/uXjVHX0U4x4=/?share_link_id=968165179673",
+  applicationForm: "https://www.uni-bamberg.de/fileadmin/wipaed-p/Studium/Interessentenbogen_Abschlussarbeit_Wirtschaftspaedagogik_23-05-10.docx",
+  examOffice: "https://www.uni-bamberg.de/pruefungsamt/abschlussarbeiten-informationen-zur-anmeldung-und-abgabe/",
+  submissionForm: "https://form.uni-bamberg.de/form/alias/1/einreichung-ba-ma-arbeit/",
+  apa: "https://apastyle.apa.org/style-grammar-guidelines/references/examples",
+  contactMail: "mailto:abschlussarbeiten.wipaed@uni-bamberg.de",
+  secretaryMail: "mailto:sekretariat.wipaed@uni-bamberg.de"
+};
+let thesisType = "bachelor";
+let activeStep = "topic";
+
+const steps = {
+  topic: {
+    kicker: "Schritt 1 von 6",
+    title: "Thema finden",
+    html: `<p class="detail-text">Die Betreuung von Abschlussarbeiten in der Wirtschaftspädagogik wird semesterweise angeboten. Prüfen Sie zunächst die aktuelle Themenliste.</p><ul class="detail-list"><li>Die Themenliste wird für das Wintersemester im Mai und für das Sommersemester im Dezember aktualisiert.</li><li>Vergebene Themen werden in der dynamischen Liste ausgestrichen.</li><li>Eigene Themenvorschläge sind möglich, sollten aber fachlich zu den Forschungsschwerpunkten der Mitarbeitenden passen.</li></ul>`,
+    actions: [["Aktuelle Themenliste öffnen", links.topics, "primary", "_blank"]]
+  },
+  apply: {
+    kicker: "Schritt 2 von 6",
+    title: "Bewerben und Betreuungszusage erhalten",
+    html: `<p class="detail-text">Für ein ausgeschriebenes Thema senden Sie das Bewerbungsformular direkt an die beim Thema angegebene Betreuerin bzw. den angegebenen Betreuer.</p><ul class="detail-list"><li>Prüfen Sie vor der Bewerbung, ob das gewünschte Thema noch frei ist.</li><li>Bei einem eigenen Themenvorschlag wenden Sie sich direkt an fachlich passende Mitarbeitende.</li><li>Die Betreuungszusage sollte vor der formalen Anmeldung beim Prüfungsamt vorliegen.</li></ul>`,
+    actions: [["Bewerbungsformular öffnen", links.applicationForm, "primary", "_blank"],["Themenliste prüfen", links.topics, "secondary", "_blank"]]
+  },
+  register: {
+    kicker: "Schritt 3 von 6",
+    title: "Abschlussarbeit beim Prüfungsamt anmelden",
+    html: `<p class="detail-text">Nach der Betreuungszusage folgt die formale Zulassung und Anmeldung über das Prüfungsamt. Für SoWi/WIAI gelten dort die jeweils aktuellen Anmeldehinweise.</p><ul class="detail-list"><li>Verwenden Sie für den Zulassungsantrag Ihre studentische Uni-Bamberg-Mailadresse.</li><li>Das Prüfungsamt prüft die Zulassungsvoraussetzungen und informiert Sie über die weiteren Schritte.</li><li>Nach Bestätigung des Themas wird das verbindliche Thema und das Abgabedatum in FlexNow eingetragen.</li></ul><div class="notice">Die WiPäd-Seite weist darauf hin, dass die eigenen Anmeldehinweise aktuell überarbeitet werden. Nutzen Sie für die formalen Details daher die aktuelle Prüfungsamt-Seite.</div>`,
+    actions: [["Aktuelle Hinweise des Prüfungsamts", links.examOffice, "primary", "_top"],["Frage zur WiPäd-Anmeldung mailen", links.contactMail, "secondary", "_top"]]
+  },
+  write: {
+    kicker: "Schritt 4 von 6",
+    title: "Arbeit bearbeiten",
+    html: `<p class="detail-text">Orientieren Sie sich während der Bearbeitung an den Vorgaben Ihrer Betreuung sowie den geltenden formalen und wissenschaftlichen Standards.</p><ul class="detail-list"><li>Für wissenschaftliches Arbeiten in der Wirtschaftspädagogik gilt derzeit APA 7.</li><li>Das verbindliche Abgabedatum können Sie nach abgeschlossener Anmeldung in FlexNow einsehen.</li><li>Bei Masterarbeiten außerhalb der Wirtschaftspädagogik beachten Sie zusätzlich den geforderten wirtschaftspädagogischen Bezug.</li></ul>`,
+    actions: [["APA-7-Beispiele öffnen", links.apa, "primary", "_blank"]]
+  },
+  submit: {
+    kicker: "Schritt 5 von 6",
+    title: "Abschlussarbeit fristgerecht abgeben",
+    html: `<p class="detail-text">Die Universität sieht für Bachelor- und Masterarbeiten die digitale Abgabe über den Formularserver vor.</p><ul class="detail-list"><li>Die Arbeit wird digital im Format PDF/A eingereicht.</li><li>Beachten Sie die Hinweise im Formularserver zu Dateigröße und Dateibezeichnung.</li><li>Zusätzliche Papierexemplare sind nur einzureichen, wenn die Prüfenden dies verlangen.</li><li>Auch ergänzende Dateien wie Daten oder Software müssen fristgerecht übergeben werden.</li></ul>`,
+    actions: [["Abgabe im Formularserver", links.submissionForm, "primary", "_blank"],["Hinweise zur Abgabe", links.examOffice, "secondary", "_top"]]
+  },
+  after: { kicker: "Schritt 6 von 6", title: "Übergang nach der Abschlussarbeit", html: "", actions: [] }
+};
+
+function afterHtml() {
+  if (thesisType === "bachelor") {
+    return `<p class="detail-text">Wenn Sie anschließend den M. Sc. Wirtschaftspädagogik in Bamberg aufnehmen möchten, sollten Sie die Bewertung Ihrer Bachelorarbeit bei der Zeitplanung berücksichtigen.</p><ul class="detail-list"><li>Liegt die Note innerhalb der Bewerbungsfrist noch nicht vor, wird sie im Eignungsverfahren laut WiPäd-Seite zunächst mit der fiktiven Note 4,0 berücksichtigt.</li><li>Spätestens zur Immatrikulation muss die Bachelorarbeit mindestens bestanden sein.</li><li>Als Orientierung nennt die WiPäd-Seite für eine notwendige Bestehensbescheinigung eine Abgabe Anfang März (Sommersemester) bzw. Anfang September (Wintersemester), jeweils nach Absprache mit der Betreuung.</li></ul><div class="notice">Diese Termine sind Planungsorientierungen. Stimmen Sie Ihren konkreten Zeitplan mit Ihrer Betreuung ab.</div>`;
+  }
+  return `<p class="detail-text">Wenn Sie nach dem Master in das Referendariat eintreten möchten, planen Sie die Bewertung und eine mögliche Bestehensbescheinigung rechtzeitig ein.</p><ul class="detail-list"><li>Für den Eintritt in das Referendariat in Bayern muss die Masterarbeit laut WiPäd-Seite mindestens bestanden sein.</li><li>Als Orientierung werden für den Eintritt zum 01.02. eine Abgabe Anfang Januar und für den Eintritt zum 01.09. eine Abgabe Anfang August genannt – jeweils nach Absprache mit der Betreuung.</li><li>Für andere Bundesländer können andere Fristen gelten.</li></ul><div class="notice">Eine Bestehensbescheinigung kann in Absprache mit der Betreuerin bzw. dem Betreuer ausgestellt werden.</div>`;
+}
+
+function renderStep(stepKey, moveFocus=false) {
+  activeStep = stepKey;
+  const step = steps[stepKey];
+  document.querySelectorAll(".step-button").forEach(btn => btn.setAttribute("aria-selected", btn.dataset.step === stepKey ? "true" : "false"));
+  document.getElementById("detailKicker").textContent = step.kicker;
+  document.getElementById("detailTitle").textContent = step.title;
+  document.getElementById("detailBody").innerHTML = stepKey === "after" ? afterHtml() : step.html;
+  const actions = document.getElementById("detailActions");
+  actions.innerHTML = "";
+  (step.actions || []).forEach(([label, href, style, target]) => {
+    const a = document.createElement("a");
+    a.className = "link-button " + (style === "primary" ? "link-primary" : "link-secondary");
+    a.href = href; a.textContent = label; a.target = target;
+    if (target === "_blank") a.rel = "noopener";
+    actions.appendChild(a);
+  });
+  if (moveFocus) { const detail = document.getElementById("detail"); detail.focus({preventScroll:true}); detail.scrollIntoView({behavior:"smooth",block:"nearest"}); }
+}
+
+document.querySelectorAll(".step-button").forEach(btn => btn.addEventListener("click", () => renderStep(btn.dataset.step, true)));
+document.querySelectorAll(".type-button").forEach(btn => btn.addEventListener("click", () => {
+  thesisType = btn.dataset.type;
+  document.querySelectorAll(".type-button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
+  if (activeStep === "after") renderStep("after", false);
+}));
+
+const specialPanel = document.getElementById("specialPanel");
+document.querySelectorAll(".special-button").forEach(btn => btn.addEventListener("click", () => {
+  if (btn.dataset.special === "external") {
+    specialPanel.innerHTML = `<h3>Wirtschaftspädagogischer Bezug bei Masterarbeiten außerhalb der WiPäd</h3><p>Bei Masterarbeiten im betriebswirtschaftlichen oder sozialwissenschaftlichen Lehrbereich muss ein ausreichender wirtschaftspädagogischer Bezug erkennbar sein – nicht nur in Problemstellung oder Ausblick, sondern auch in den Kernkapiteln.</p><p>Für die Prüfung senden Sie an <strong>sekretariat.wipaed@uni-bamberg.de</strong>:</p><ul><li>Titel der Abschlussarbeit</li><li>Exposé zur Abschlussarbeit</li><li>Betreuerin bzw. Betreuer der Arbeit</li></ul><div class="actions"><a class="link-button link-primary" href="${links.secretaryMail}">E-Mail vorbereiten</a></div>`;
+  } else {
+    specialPanel.innerHTML = `<h3>Bestehensbescheinigung</h3><p>Wenn Sie für Berufseinstieg oder Referendariat eine Bestehensbescheinigung der Masterarbeit benötigen, wenden Sie sich nach Absprache formlos an Ihre Betreuerin bzw. Ihren Betreuer. Die Bescheinigung gilt bis zum Feststehen der endgültigen Note.</p>`;
+  }
+  specialPanel.classList.add("is-visible");
+  specialPanel.scrollIntoView({behavior:"smooth",block:"nearest"});
+}));
+
+renderStep("topic");
+</script>
+</body>
+</html>
+
+<!--
+======================================================================
+README / WARTUNGSHINWEIS – ABSCHLUSSARBEITEN-NAVIGATOR WIPAED
+Stand: 02.10.2026
+======================================================================
+EINSATZSEITE
+https://www.uni-bamberg.de/wipaed/studium/waehrend-des-studiums/seminar-und-abschlussarbeiten/
+
+PROZESS
+1 Thema finden
+2 Bewerben & Betreuungszusage
+3 Anmeldung beim Prüfungsamt
+4 Bearbeitung
+5 Abgabe
+6 Übergang danach
+
+AKTUELLE THEMENLISTE
+https://miro.com/app/board/uXjVHX0U4x4=/?share_link_id=968165179673
+
+BEWERBUNGSFORMULAR
+https://www.uni-bamberg.de/fileadmin/wipaed-p/Studium/Interessentenbogen_Abschlussarbeit_Wirtschaftspaedagogik_23-05-10.docx
+
+PRÜFUNGSAMT – AKTUELLE ANMELDUNG UND ABGABE
+https://www.uni-bamberg.de/pruefungsamt/abschlussarbeiten-informationen-zur-anmeldung-und-abgabe/
+
+DIGITALE ABGABE
+https://form.uni-bamberg.de/form/alias/1/einreichung-ba-ma-arbeit/
+
+APA 7
+https://apastyle.apa.org/style-grammar-guidelines/references/examples
+
+KONTAKT WIPAED-ABSCHLUSSARBEITEN
+abschlussarbeiten.wipaed@uni-bamberg.de
+
+WIRTSCHAFTSPÄDAGOGISCHEN BEZUG PRÜFEN
+sekretariat.wipaed@uni-bamberg.de
+
+PFLEGEHINWEIS
+Die WiPäd-Seite weist aktuell darauf hin, dass eigene Hinweise zur Anmeldung
+überarbeitet werden. Deshalb verweist das Tool bei den formalen Schritten auf
+die aktuelle zentrale Prüfungsamt-Seite.
+
+Links stehen gesammelt im JavaScript unter: const links = { ... }
+
+TYPO3
+- GitHub Pages als iframe / externe Seite einbinden.
+- Automatic Size -> iFrame Resizer.
+- Das nötige Script ist im <head> enthalten.
+======================================================================
+-->
